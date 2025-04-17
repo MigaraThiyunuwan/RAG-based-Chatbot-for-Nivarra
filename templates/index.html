@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nivarra Assistant</title>
+    <style>
+        body { font-family: Arial, 
+            sans-serif; 
+            padding: 20px; 
+            background-color: f1f1f1;
+        }
+        .header{
+            text-align: center; 
+            margin-bottom: 20px; 
+            background-color: azure; 
+            padding: 10px; 
+            border-radius: 5px; 
+        }
+        .container { 
+            width: 100%; 
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            flex-direction: column;
+        }
+        .chatbox { 
+            width: 80%; 
+            height: 600px; 
+            border: 5px solid #ccc; 
+            overflow-y: scroll; 
+            margin-bottom: 20px; padding: 10px; 
+        }
+        .input-area {  
+            width: 80%;
+            display: flex; 
+            justify-content: space-between; 
+        }
+        .input-box { 
+            height: 30px;
+            width: 90%; 
+            padding: 10px; 
+            font-size: large;
+        }
+        .button { 
+            width: 100px;
+            padding: 10px 20px; 
+            background-color: #4CAF50; 
+            font-size: large;
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+        }
+
+        #chatbox {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    height: 700px;
+    overflow-y: auto;
+    font-family: Arial, sans-serif;
+  }
+
+  .user {
+    color: #1a73e8;
+    font-weight: bold;
+    font-size: 25px;
+    margin-left: 10px;
+  }
+
+  .assistant {
+    color: #34a853;
+    font-weight: bold;
+    font-size: 25px;
+  }
+
+  .amessage{
+    font-size: 25px;
+    text-align: left;
+    margin-bottom: 10px;
+    background-color: #c6f8a9;
+    padding: 10px;
+    border: solid 2px #1a73e8;
+    border-radius: 5px;
+  }
+  .umessage {
+
+    font-size: 25px;
+    text-align: right;
+    margin-bottom: 10px;
+    background-color: #b9d6fc;
+    padding: 10px;
+    border: solid 2px #1a73e8;
+    border-radius: 5px;
+  }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Nivarra Assistant</h1>
+        <h2>Nivarra is an imaginary island used for demonstration purposes.</h2>
+    </div>
+    
+    <div class="container">
+        <div class="chatbox" id="chatbox">
+            <!-- Conversation will appear here -->
+        </div>
+        <div class="input-area">
+            <input type="text" id="user_input" class="input-box" placeholder="Ask a question...">
+            <button class="button" id="ask_button">Ask</button>
+        </div>
+        
+    </div>
+    
+
+    <script>
+        document.getElementById("ask_button").onclick = function() {
+          var user_input = document.getElementById("user_input").value;
+          if (user_input.trim() != "") {
+            var chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += '<div class="umessage">' + user_input + '<span class="user">:You</span> </div>';
+            document.getElementById("user_input").value = "";
+      
+            fetch("/ask", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              body: "question=" + encodeURIComponent(user_input)
+            })
+            .then(response => response.json())
+            .then(data => {
+              chatbox.innerHTML += '<div class="amessage"><span class="assistant">Assistant:</span> ' + data.answer + '</div>';
+              document.getElementById("user_input").value = "";
+              chatbox.scrollTop = chatbox.scrollHeight;
+            });
+          }
+        }
+      </script>
+</body>
+</html>
