@@ -1,0 +1,7 @@
+flask
+llama-index
+faiss-cpu
+PyPDF2
+numpy
+pydantic
+ollama
